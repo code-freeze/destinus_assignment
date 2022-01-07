@@ -14,7 +14,7 @@ number_elements = 2  # Number of Elements the user wants the problem to be discr
 limit=240  # Yield Stress in MPa (Elastic Limit)
 limit_array = limit*np.ones([number_elements,1]) # Array in order to compute for 'number_elements' number of elements
 E=Ct=120000*np.ones([number_elements,1])  # Young's Modulus and Tangent Stiffness (GPa), which are initially equal for Plastic Condtion 
-steps = 10000 # No. of Steps user wants to focus_nodeide the time and force
+steps = 1000 # No. of Steps user wants to focus_nodeide the time and force
 
 del_t = 1/steps
 force_increment = np.linspace(0,f_total,steps)
@@ -46,7 +46,7 @@ external_force = np.zeros([number_elements+1,1])
 u_glob =  np.zeros([number_elements+1,1])  # Initialzing Global Displacement Matrix
 u_elements = np.zeros([number_elements , 2, 1])  # Initializing Element Displacement Matrix (as a 3D Matrix)
 
-u_prev = 0
+u_prev = np.zeros([number_elements,1])
 eps_next = 0
 total_disp= []
 t_disp = "disp.txt"
@@ -78,8 +78,6 @@ for f in force_increment:
             K_glob = K_glob + np.matmul( np.matmul(A.T,K_ele),A) 
             
         focus_node = our_element.focus_node_return()
-        print(focus_node)
-        print(K_glob)
         K_glob_red = K_glob[1:focus_node+1,1:focus_node+1]
         K_glob_red_inv = np.linalg.inv(K_glob_red)
         G = external_force -  internal_force
@@ -87,8 +85,9 @@ for f in force_increment:
         # del_u = G_red/K_glob_red 
         del_u  = np.matmul(K_glob_red_inv, G_red)
         u_next = u_prev + del_u
-        u_glob[focus_node] = del_u
+        u_glob[1:focus_node+1] = del_u
         
+        # print(u_glob)
         for ele in range(number_elements):
             A = our_element.A_matrix(ele+1)
             u_elements[ele,:,:,] = u_elements[ele,:,:,] + np.matmul(A,u_glob)
@@ -106,12 +105,16 @@ for f in force_increment:
     print(Ct)
     
     with open(t_disp, 'a') as fd:
-        x_write = u_next
+        x_write = u_next[-1]
         fd.write("\n t_disp %s %s " %(x_write,status))
         fd.close()
 
 stress_list=np.array(stress_list)
 save_strain=np.array(save_strain)
+
+total_disp = np.array(total_disp)
+total_disp = total_disp[:,1:2,:].flatten()
+# print(total_disp.flatten())
 
 fig, axs = plt.subplots(1,2,figsize=(25,25))
 axs[0].set(xlabel = 'Strain')
