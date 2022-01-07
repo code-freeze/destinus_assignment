@@ -78,10 +78,14 @@ for f in force_increment:
             K_glob = K_glob + np.matmul( np.matmul(A.T,K_ele),A) 
             
         focus_node = our_element.focus_node_return()
-        K_glob_red = K_glob[1:focus_node,1:focus_node]
+        print(focus_node)
+        print(K_glob)
+        K_glob_red = K_glob[1:focus_node+1,1:focus_node+1]
+        K_glob_red_inv = np.linalg.inv(K_glob_red)
         G = external_force -  internal_force
-        G_red = G[1:focus_node]
-        del_u = G_red/K_glob_red
+        G_red = G[1:focus_node+1]
+        # del_u = G_red/K_glob_red 
+        del_u  = np.matmul(K_glob_red_inv, G_red)
         u_next = u_prev + del_u
         u_glob[focus_node] = del_u
         

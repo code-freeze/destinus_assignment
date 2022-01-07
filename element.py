@@ -79,7 +79,9 @@ class Element():
 
 # return the node number on which external forces are applied
     def focus_node_return(self):
-        return self.focus_node
+        # print(self.focus_node)
+        # print(self.number_elements)
+        return self.number_elements
 
     # to get the strain from disp
     def strain(self, u_elements):
