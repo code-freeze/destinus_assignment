@@ -19,10 +19,10 @@ class Element():
             return 1
     
     def parameters(self):
-
         self.length = []
         self.area = []
-        self.focus_node = int(self.number_elements/2) + 1
+        # self.focus_node = int(self.number_elements/2) + 1
+        self.focus_node = int(self.number_elements) 
         if self.number_elements <= 1:
             sys.exit ()
         if self.number_elements == 2:
@@ -39,32 +39,29 @@ class Element():
 
         return self.length , self.area
 
-    
+    # B matrix, used to calculate the strains from displacement -->
     def B_matrix(self):
-
         self.B = np.array([(-1/self.length),(1/self.length)])
   
+  # Jacobian , here [1] due to oneD
     def J_matrix(self):
-
         self.J = self.length/2
     
-
+   # k element matrix -->
     def k_ele(self, Ct):
-        
         k=Ct*(self.area/self.length)* np.array([[1,-1],[-1,1]]) 
        
         return k
- 
+    # Assignment matrix -->
     def A_matrix(self,ele_num): 
-       
         a_element=np.zeros([2,self.number_elements+1])
         a_element[0][ele_num-1]=1
         a_element[1][ele_num]=1
         
         return a_element
     
+    #to get the internal forces on each element
     def internal_forceernal(self, sigma): 
-       
         int_force = []
         for ele in range(self.number_elements):
            
@@ -72,25 +69,22 @@ class Element():
 
         return int_force
 
+    #to get extrenal forces on each element
     def external_force(self, f):
-       
         ext_force=np.zeros(self.number_elements+1)
         focus_node_check = self.focus_node
         ext_force[focus_node_check]= f
       
         return ext_force.reshape(self.number_elements+1,1)
 
+# return the node number on which external forces are applied
     def focus_node_return(self):
-       
         return self.focus_node
 
+    # to get the strain from disp
     def strain(self, u_elements):
-       
         strain_combined = []
-       
         for ele in range(self.number_elements):
-          
             strain_combined.append(np.dot(self.B[:,ele],u_elements[ele,:,:]))
-       
         return np.array(strain_combined)
 

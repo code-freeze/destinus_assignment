@@ -20,6 +20,12 @@ del_t = 1/steps
 force_increment = np.linspace(0,f_total,steps)
 # This is the constructor for Element class in the Element Routine
 # The arguements passed are the lengths, cross sectional areas of two elements and the weight
+# this is used to get /update the elemental assignement matrix
+
+
+# NON-LINEAR FINITE ELEMENT ANALYSIS oF SOLIDS AND STRUCTURES
+# René de Borst, Mike A. Crisfield
+
 our_element = Element(number_elements, 20,75, 20, 75, weight)
 epsilon = np.zeros(number_elements)  #Initialization of strain values for all elements
 our_material = Material(number_elements,epsilon, E, limit_array , del_t, vis)  # This is the constructor for Material class in the material routine
@@ -57,6 +63,9 @@ for f in force_increment:
     # Initializing Residual
     G=np.zeros([number_elements+1,1])
     
+    #used to calculate the final dispalcement occured due to external loading
+    #in this case due to incremental loading, we use this in every iteration to minmiza the delta(F)
+    
     for Newton_Raphson_Iteration in range(6): #Since Newton-Raphosn will converge within this Criterion
         K_glob = np.zeros([number_elements+1,number_elements+1])
         if f == 0: 
@@ -69,9 +78,9 @@ for f in force_increment:
             K_glob = K_glob + np.matmul( np.matmul(A.T,K_ele),A) 
             
         focus_node = our_element.focus_node_return()
-        K_glob_red = K_glob[focus_node,focus_node]
+        K_glob_red = K_glob[1:focus_node,1:focus_node]
         G = external_force -  internal_force
-        G_red = G[focus_node]
+        G_red = G[1:focus_node]
         del_u = G_red/K_glob_red
         u_next = u_prev + del_u
         u_glob[focus_node] = del_u

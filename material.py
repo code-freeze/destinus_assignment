@@ -14,15 +14,19 @@ class Material (object):
         self.sigma = np.zeros([self.number_elements,1]) 
         self.eps_pl_k_prev = np.zeros([self.number_elements,1]) 
     
+    # sigma =YM*strain
     def sigma_fun (self,strain_check):  
-
         self.epsilon = strain_check
         self.sigma = self.E * self.epsilon
 
         return self.sigma 
     
+    #it is used to check if any element has reached plastic stage
+    # if the stess of element is less than Yield stress, in elastic zone
+    # as soon as the element stress exceeeds the Yield stress, we calculatlate the plastic strain 
+    # etrue-eyield
+    
     def material_condition(self, eps_pl_k, strain_check, f):
-
         self.epsilon = strain_check
 
         if abs(self.sigma[0]) < self.limit_array[0] and abs(self.sigma[1]) < self.limit_array[1]: 
