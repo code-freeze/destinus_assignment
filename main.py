@@ -20,7 +20,7 @@ del_t = 1/steps
 force_increment = np.linspace(0,f_total,steps)
 # This is the constructor for Element class in the Element Routine
 # The arguements passed are the lengths, cross sectional areas of two elements and the weight
-our_element = Element(number_elements, 20,75, 20, 75, weight)
+our_element = Element(number_elements, 20,75, 10, 80, weight)
 epsilon = np.zeros(number_elements)  #Initialization of strain values for all elements
 our_material = Material(number_elements,epsilon, E, limit_array , del_t, vis)  # This is the constructor for Material class in the material routine
 length, area = our_element.parameters()  # Calling Element Routine
@@ -51,7 +51,7 @@ except:
     pass
 
 for f in force_increment: 
-    print("Value of Force : ", f)
+    print("Value of Force now : ", f)
     # Calling External Force from Element Routine
     external_force = our_element.external_force(f)
     # Initializing Residual
@@ -90,7 +90,7 @@ for f in force_increment:
     save_strain.append(epsilon[0])
     total_disp.append(u_next)
     plot_steps = np.linspace(0,1,steps)
-    print(Ct)
+    # print(Ct)
     
     with open(t_disp, 'a') as fd:
         x_write = u_next
