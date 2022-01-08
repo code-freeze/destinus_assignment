@@ -37,6 +37,8 @@ class Material (object):
 
         elif abs(self.sigma[0]) > self.limit_array[0] and abs(self.sigma[1]) < self.limit_array[1]: 
 
+            # why is this used for?
+            #ans: 
             for _ in range(int(10000)):
                 self.sigma = self.E * ( self.epsilon - eps_pl_k)
                 self.sigma[1] = self.E[1] * self.epsilon[1]

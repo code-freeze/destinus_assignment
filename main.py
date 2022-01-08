@@ -6,15 +6,17 @@ import matplotlib.pyplot as plt
 
 # Declaration of All Parameters
 
+#  ???????????????????
 weight = 2  # Since gauss point = 1, the weight = 2
-f_total = 10000  # Magnitude of Maximum Force (Newton)
+
+f_total = 5100  # Magnitude of Maximum Force (Newton)
 vis=1  # Viscosity of the material model (per second)
 max_time=1  # Total time for which force is applied (seconds)
 number_elements = 2  # Number of Elements the user wants the problem to be discretized 
 limit=240  # Yield Stress in MPa (Elastic Limit)
 limit_array = limit*np.ones([number_elements,1]) # Array in order to compute for 'number_elements' number of elements
 E=Ct=120000*np.ones([number_elements,1])  # Young's Modulus and Tangent Stiffness (GPa), which are initially equal for Plastic Condtion 
-steps = 1000 # No. of Steps user wants to focus_nodeide the time and force
+steps = 6000 # No. of Steps user wants to focus_nodeide the time and force
 
 del_t = 1/steps
 force_increment = np.linspace(0,f_total,steps)
@@ -26,7 +28,7 @@ force_increment = np.linspace(0,f_total,steps)
 # NON-LINEAR FINITE ELEMENT ANALYSIS oF SOLIDS AND STRUCTURES
 # René de Borst, Mike A. Crisfield
 
-our_element = Element(number_elements, 20,75, 20, 75, weight)
+our_element = Element(number_elements, 10,40, 20, 80, weight)
 epsilon = np.zeros(number_elements)  #Initialization of strain values for all elements
 our_material = Material(number_elements,epsilon, E, limit_array , del_t, vis)  # This is the constructor for Material class in the material routine
 length, area = our_element.parameters()  # Calling Element Routine
